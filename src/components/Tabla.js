@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Cuadrado from "./Cuadrado"
 const Tabla = () => {
     //HOOKS
@@ -6,6 +6,7 @@ const Tabla = () => {
     const [estadoEmoji, setEstadoEmoji] = useState('❌');
     const [finDelJuego, setFinDelJuego] = useState(false); //dice cuando el jeugo termine
     const [showMessage, SetShowMessage] = useState();
+
     //const [estado, setEstado] = useState('Check--X');
 
     //*  CONST
@@ -19,12 +20,26 @@ const Tabla = () => {
         [0, 4, 8],
         [2, 4, 6]
     ];
-    const messageTurn = () => `Turno del jugador ${estadoEmoji}`,
-        messageWinned = () => `El Ganador es ${estadoEmoji}`,
-        messageEmpate = () => `Ocurrio un empate :C`;
+    const messageTurn = () => `Turno del jugador ${(estadoEmoji === '❌') ? '⭕️' : '❌'}`,
+        messageWinned = () => `El Ganador es ${(estadoEmoji === '❌') ? '⭕️' : '❌'}`,
+        messageEmpate = () => `Ocurrio un empate 😡`;
+
+
+    //useEffect -> Cada vez que el hook  finDelJuego cambie de valor se activa esta funcion!!
+    useEffect(() => {
+        //console.log("Cambio");
+        SetShowMessage(messageWinned);
+    }, [finDelJuego]);
+
+    useEffect(() => {
+        if (!tabla.includes('') && !finDelJuego) {
+            SetShowMessage(messageEmpate);
+        }
+    }, [estadoEmoji]);
+    //se ejecuta cuando se incia el componente xD
 
     //FUNCIONES
-  
+
     const handleClick = (e) => {
         const evento = e.target;
         //console.log("CLik", e.target.classList);
@@ -34,6 +49,7 @@ const Tabla = () => {
         if (e.target.classList.contains('Check--O')||e.target.classList.contains('Check--X')) {
             return;
         } */
+
         if (finDelJuego || evento.innerHTML === '❌' || evento.innerHTML === '⭕️') {
             return;
         }
@@ -76,7 +92,10 @@ const Tabla = () => {
                 setFinDelJuego(true);
                 return;
             }
+
         }
+
+
     }
     return (
         <div className='flex flex-col text-center'>
@@ -96,13 +115,13 @@ const Tabla = () => {
             </div>
             <div>
                 <div>
-                    <h3 className='bg-yellow-500 m-4 rounded shadow-xl'>
+                    <h3 className='bg-yellow-500 m-3 p-1 rounded shadow-xl  text-xl'>
                         {showMessage}
 
                     </h3>
                 </div>
                 <button
-                    className="  bg-red-700 rounded-xl p-2 text-white"
+                    className="  bg-red-700 rounded-xl p-2 text-white text-xl"
                     onClick={limpiar}
                 >Reiniciar Juego</button>
             </div>
